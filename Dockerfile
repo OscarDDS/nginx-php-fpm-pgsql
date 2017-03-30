@@ -1,10 +1,10 @@
 FROM nginx:mainline-alpine
 
-MAINTAINER ngineered <support@ngineered.co.uk>
+MAINTAINER oramirezo <ORamirezO@gmail.com>
 
 ENV php_conf /etc/php5/php.ini
 ENV fpm_conf /etc/php5/php-fpm.conf
-ENV composer_hash 61069fe8c6436a4468d0371454cf38a812e451a14ab1691543f25a9627b97ff96d8753d92a00654c21e2212a5ae1ff36
+ENV composer_hash 669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
@@ -14,6 +14,8 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     wget \
     supervisor \
     curl \
+    gdal@testing \
+    geos@testing \
     git \
     php5-fpm \
     php5-pdo \
@@ -25,6 +27,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php5-intl \
     php5-memcache \
     php5-pgsql \
+    php5-pdo_pgsql \
     php5-pear \
     php5-xml \
     php5-xsl \
@@ -38,6 +41,13 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php5-zip \
     php5-cli \
     php5-redis@testing \
+    postgresql \
+    postgresql-client \
+    postgresql-contrib \
+    postgresql-dev \
+    postgresql-libs \
+    proj4@testing \
+    postgis@testing \
     python \
     python-dev \
     py-pip \
@@ -62,7 +72,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     mkdir -p /etc/letsencrypt/webrootauth && \
     apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev
 
-
 ADD conf/supervisord.conf /etc/supervisord.conf
 
 # Copy our nginx config
@@ -74,7 +83,8 @@ RUN mkdir -p /etc/nginx/sites-available/ && \
 mkdir -p /etc/nginx/sites-enabled/ && \
 mkdir -p /etc/nginx/ssl/ && \
 rm -Rf /var/www/* && \
-mkdir /var/www/html/
+mkdir /var/www/html/ \
+mkdir -p /usr/share/pear/
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 ADD conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
@@ -117,7 +127,7 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 ADD src/ /var/www/html/
 ADD errors/ /var/www/errors/
 
-VOLUME /var/www/html
+VOLUME /var/www/html /usr/share/pear
 
 EXPOSE 443 80
 
