@@ -263,6 +263,7 @@ if($db) {
             "p" => array(
                 "Clave" => $datosOrden->Token,
                 "ClubBI" => $datosOrden->ClubBI->numeroClubBI,
+                "ClubBICupones" => $datosOrden->CuponesClubBI,
                 "CodigoDepartamento" => $datosOrden->Tienda->CodigoDepartamento,
                 "CodigoMunicipio" => $datosOrden->Tienda->CodigoMunicipio,
                 "CodigoPais" => $datosOrden->Tienda->CodigoPais,
